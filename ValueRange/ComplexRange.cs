@@ -7,7 +7,13 @@ namespace ValueRange
 {
     public class ComplexRange<T> : Range<T> where T:IComparable<T>
     {
-        readonly SingleRange<T>[] elements;
+        private SingleRange<T>[] elements;
+
+        public ComplexRange(SingleRange<T>[] elements)
+        {
+            this.elements = new SingleRange<T>[elements.Length];
+            Array.Copy(elements, this.elements, elements.Length);
+        }
 
         public override bool Includes(T value)
         {
@@ -67,6 +73,11 @@ namespace ValueRange
         public override bool IsUniversal
         {
             get { throw new NotImplementedException(); }
+        }
+
+        public override string ToString()
+        {
+            return string.Join(",", elements.Select(element => element.ToString()).ToArray());
         }
     }
 }

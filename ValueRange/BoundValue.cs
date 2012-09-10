@@ -46,6 +46,8 @@ namespace ValueRange
 
             public override bool Equals(object obj) { return obj is UpperBoundValue && ((UpperBoundValue)obj).value.Equals(value); }
             public override int GetHashCode() { return value.GetHashCode(); }
+
+            public override string ToString() { return value.ToString(); }
         }
 
         /// <summary>
@@ -62,6 +64,8 @@ namespace ValueRange
 
             public override bool Equals(object obj) { return obj is LowerBoundValue && ((LowerBoundValue)obj).value.Equals(value); }
             public override int GetHashCode() { return ~value.GetHashCode(); }
+
+            public override string ToString() { return value.ToString(); }
         }
 
         public class NegativeInfiniteValue : BoundValue<T>
@@ -74,6 +78,8 @@ namespace ValueRange
 
             public override bool Equals(object obj) { return obj is NegativeInfiniteValue; }
             public override int GetHashCode() { return typeof(NegativeInfiniteValue).GetHashCode(); }
+
+            public override string ToString() { return "-∞"; }
         }
 
 
@@ -87,6 +93,8 @@ namespace ValueRange
 
             public override bool Equals(object obj) { return obj is PositiveInfiniteValue; }
             public override int GetHashCode() { return typeof(PositiveInfiniteValue).GetHashCode(); }
+
+            public override string ToString() { return "∞"; }
         }
     }
 }

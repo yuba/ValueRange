@@ -102,5 +102,32 @@ namespace ValueRange
         {
             get { throw new NotImplementedException(); }
         }
+
+        public override string ToString()
+        {
+            string result = "";
+
+            if (lower is BoundValue<T>.LowerBoundValue)
+            {
+                result +=  "[" + lower.ToString();
+            }
+            else
+            {
+                result += "(" + lower.ToString();
+            }
+
+            result += ",";
+
+            if (upper is BoundValue<T>.UpperBoundValue)
+            {
+                result += upper.ToString() + "]";
+            }
+            else
+            {
+                result += upper.ToString() + ")";
+            }
+
+            return result;
+        }
     }
 }

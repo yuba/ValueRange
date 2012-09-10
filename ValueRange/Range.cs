@@ -26,6 +26,8 @@ namespace ValueRange
         public static Range<T> operator -(Range<T> left, Range<T> right) { return left.Subtract(right); }
         public static Range<T> operator ~(Range<T> left) { return left.Complement; }
 
+        public static readonly Range<T> That = UniversalRange.Instance;
+
         public abstract bool Includes(T value);
         public abstract bool OverlapsWith(Range<T> other);
         public abstract bool OverlapsWith(SingleRange<T> other);

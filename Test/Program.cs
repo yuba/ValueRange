@@ -44,6 +44,11 @@ namespace Test
             Console.Out.WriteLine("-∞ < +∞ == " + (ni < pi));
             Console.Out.WriteLine();
 
+            var range = (2 <= Range<int>.That < 3);
+            Console.Out.WriteLine(range);
+            Console.Out.WriteLine(Range<int>.That > 0);
+
+
             Console.In.ReadLine();
         }
     }

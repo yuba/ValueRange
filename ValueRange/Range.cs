@@ -32,7 +32,7 @@ namespace ValueRange
         public abstract bool OverlapsWith(Range<T> other);
         protected abstract bool OverlapsWith(SingleRange other);
         public abstract Range<T> Add(Range<T> other);
-        public virtual Range<T> Subtract(Range<T> other) { return other.Complement; }
+        public virtual Range<T> Subtract(Range<T> other) { return Intersect(other.Complement); }
         public abstract Range<T> Intersect(Range<T> other);
         public abstract Range<T> Complement { get; }
         public abstract Range<T> GreaterThan(T value);

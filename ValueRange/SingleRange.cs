@@ -7,7 +7,7 @@ namespace ValueRange
 {
     public partial class Range<T> where T : IComparable<T>
     {
-        protected class SingleRange : Range<T>
+        protected class SingleRange : ContiguousRange
         {
             readonly BoundValue<T> lower, upper;
 

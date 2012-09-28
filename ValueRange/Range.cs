@@ -65,7 +65,11 @@ namespace ValueRange
             public override bool IsUniversal { get { return false; } }
         }
 
-        protected class UniversalRange : Range<T>
+        protected abstract class ContiguousRange : Range<T> 
+        {
+        }
+
+        protected class UniversalRange : ContiguousRange
         {
             public static readonly UniversalRange Instance = new UniversalRange();
             private UniversalRange() { }

@@ -32,7 +32,9 @@ namespace ValueRange
         public abstract bool OverlapsWith(Range<T> other);
         protected abstract bool OverlapsWith(SingleRange other);
         public abstract Range<T> Add(Range<T> other);
-        public virtual Range<T> Subtract(Range<T> other) { return Intersect(other.Complement); }
+		protected abstract Range<T> Add(SingleRange other);
+		protected abstract Range<T> Add(ComplexRange other);
+		public virtual Range<T> Subtract(Range<T> other) { return Intersect(other.Complement); }
         public abstract Range<T> Intersect(Range<T> other);
         public abstract Range<T> Complement { get; }
         public abstract Range<T> GreaterThan(T value);
@@ -52,7 +54,9 @@ namespace ValueRange
             public override bool OverlapsWith(Range<T> other) { return false; }
             protected override bool OverlapsWith(SingleRange other) { return false; }
             public override Range<T> Add(Range<T> other) { return other; }
-            public override Range<T> Subtract(Range<T> other) { return this; }
+			protected override Range<T> Add (SingleRange other) { return other; }
+			protected override Range<T> Add (ComplexRange other) { return other; }
+			public override Range<T> Subtract(Range<T> other) { return this; }
             public override Range<T> Intersect(Range<T> other) { return this; }
             public override Range<T> Complement { get { return UniversalRange.Instance; } }
 
@@ -78,7 +82,9 @@ namespace ValueRange
             public override bool OverlapsWith(Range<T> other) { return true; }
             protected override bool OverlapsWith(SingleRange other) { return true; }
             public override Range<T> Add(Range<T> other) { return this; }
-            public override Range<T> Intersect(Range<T> other) { return other; }
+			protected override Range<T> Add (SingleRange other) { return this; }
+			protected override Range<T> Add (ComplexRange other) { return this; }
+			public override Range<T> Intersect(Range<T> other) { return other; }
             public override Range<T> Complement { get { return EmptyRange.Instance; } }
 
             public override Range<T> GreaterThan(T value) { return SingleRange.ThatGreaterThan(value); }

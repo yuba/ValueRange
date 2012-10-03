@@ -54,8 +54,26 @@ namespace ValueRange
 
             public override Range<T> Add(Range<T> other)
             {
-                throw new NotImplementedException();
-            }
+                return other.Add (this);
+			}
+			
+			protected override Range<T> Add (ComplexRange other)
+			{
+				return other.Add(this);
+			}
+			
+			protected override Range<T> Add (SingleRange other)
+			{
+				if (this.upper < other.lower) {	// aの先頭の方が小さければ、それを流す
+					return new ComplexRange (new[] { this, other});
+				}
+				else if (other.upper < this.lower) {	// bの先頭の方が小さければ、それを流す
+					return new ComplexRange (new[] { other, this });
+				}
+				else {
+					return Merge (this, other);
+				}
+			}
 
             public override Range<T> Intersect(Range<T> other)
             {
@@ -97,12 +115,12 @@ namespace ValueRange
 
             public override bool IsEmpty
             {
-                get { throw new NotImplementedException(); }
+                get { return false; }
             }
 
             public override bool IsUniversal
             {
-                get { throw new NotImplementedException(); }
+                get { return lower is BoundValue<T>.NegativeInfiniteValue && upper is BoundValue<T>.PositiveInfiniteValue; }
             }
 
             public override string ToString()
@@ -131,6 +149,75 @@ namespace ValueRange
 
                 return result;
             }
-        }
-    }
+
+			public static SingleRange Merge (SingleRange a, SingleRange b)
+			{
+				return new SingleRange(
+					a.lower < b.lower ? a.lower : b.lower,
+					a.upper < b.upper ? b.upper : a.upper);
+			}
+
+			public static IEnumerable<SingleRange> Add (SingleRange[] a, SingleRange[] b)
+			{
+				SingleRange onStage = null;
+				int indexA = 0, indexB = 0;
+				
+				while (indexA < a.Length || indexB < b.Length) {
+					if (onStage == null) {
+
+						if (b.Length <= indexB)
+						{
+							// aにしか残り要素がない
+							for(;indexA < a.Length; indexA++) yield return a[indexA];
+							break;
+						}
+						if (a.Length <= indexA)
+						{
+							// bにしか残り要素がない
+							for(;indexB < b.Length; indexB++) yield return b[indexB];
+							break;
+						}
+
+						// a,bとも残り要素あり
+						if (a [indexA].upper < b [indexB].lower)	// aの先頭の方が小さければ、それを流す
+						{
+							yield return a [indexA];
+							indexA++;
+						}
+						else if (b [indexB].upper < a [indexA].lower)	// bの先頭の方が小さければ、それを流す
+						{
+							yield return b [indexB];
+							indexA++;
+						}
+						else
+						{
+							onStage = Merge(a[indexA], b[indexB]);
+							indexA++;
+							indexB++;
+						}
+					}
+					else 
+					{
+						if (indexA < a.Length && a[indexA].OverlapsWith(onStage))
+						{
+							onStage = Merge(a[indexA], onStage);
+							indexA++;
+						}
+						else if (indexB < b.Length && b[indexB].OverlapsWith(onStage))
+						{
+							onStage = Merge(b[indexB], onStage);
+							indexB++;
+						}
+						else
+						{
+							yield return onStage;
+							onStage = null;
+						}
+					}
+				}
+
+				if (onStage != null) yield return onStage;
+			}
+		}
+	}
 }

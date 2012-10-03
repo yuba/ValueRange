@@ -49,7 +49,17 @@ namespace ValueRange
                 throw new NotImplementedException();
             }
 
-            public override Range<T> Intersect(Range<T> other)
+			protected override Range<T> Add (SingleRange other)
+			{
+				return Create(SingleRange.Add(this.elements, new []{other}));
+			}
+			
+			protected override Range<T> Add (ComplexRange other)
+			{
+				return Create(SingleRange.Add(this.elements, other.elements));
+			}
+			
+			public override Range<T> Intersect(Range<T> other)
             {
                 throw new NotImplementedException();
             }
@@ -93,6 +103,19 @@ namespace ValueRange
             {
                 return string.Join(",", elements.Select(element => element.ToString()).ToArray());
             }
+
+			public static Range<T> Create (IEnumerable<SingleRange> ranges)
+			{
+				var elements = ranges.ToArray ();
+				switch (elements.Length) {
+				case 0:
+					return EmptyRange.Instance;
+				case 1:
+					return elements [0].IsUniversal ? UniversalRange.Instance as Range<T> : elements[0];
+				default:
+					return new ComplexRange (elements);
+				}
+			}
         }
     }
 }

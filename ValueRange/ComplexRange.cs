@@ -61,7 +61,11 @@ namespace ValueRange
 
             public override Range<T> Complement
             {
-                get { throw new NotImplementedException(); }
+                get { 
+					Range<T> result = UniversalRange.Instance;
+					Array.ForEach(elements, element => result = result.Subtract(element));
+					return result;
+				}
             }
 
             public override Range<T> GreaterThan(T value)
@@ -86,12 +90,12 @@ namespace ValueRange
 
             public override bool IsEmpty
             {
-                get { throw new NotImplementedException(); }
+				get { return false; }
             }
 
             public override bool IsUniversal
             {
-                get { throw new NotImplementedException(); }
+                get { return false; }
             }
 
             public override string ToString()

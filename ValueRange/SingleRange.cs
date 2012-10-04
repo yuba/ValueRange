@@ -62,15 +62,23 @@ namespace ValueRange
 				return ComplexRange.Create(Add (new [] {this}, otherElements));
 			}
 
-            public override Range<T> Intersect(Range<T> other)
-            {
-                throw new NotImplementedException();
-            }
+            public override Range<T> Intersect (Range<T> other)
+			{
+				throw new NotImplementedException();
+			}
 
-            public override Range<T> Complement
-            {
-                get { throw new NotImplementedException(); }
-            }
+            public override Range<T> Complement {
+				get {
+					Range<T> result = EmptyRange.Instance;
+					if (!(lower is BoundValue<T>.NegativeInfiniteValue)) {
+						result = new SingleRange (BoundValue<T>.NegativeInfinity, lower);
+					}
+					if (!(upper is BoundValue<T>.PositiveInfiniteValue)) {
+						result = result.Add (new SingleRange (upper, BoundValue<T>.PositiveInfinity));
+					}
+					return result;
+				}
+			}
 
             public override Range<T> GreaterThan(T value)
             {

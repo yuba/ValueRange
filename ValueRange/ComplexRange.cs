@@ -46,17 +46,12 @@ namespace ValueRange
 
             public override Range<T> Add(Range<T> other)
             {
-                throw new NotImplementedException();
+                return other.Add(elements);
             }
 
-			protected override Range<T> Add (SingleRange other)
+			protected override Range<T> Add (SingleRange[] otherElements)
 			{
-				return Create(SingleRange.Add(this.elements, new []{other}));
-			}
-			
-			protected override Range<T> Add (ComplexRange other)
-			{
-				return Create(SingleRange.Add(this.elements, other.elements));
+				return Create(SingleRange.Add(this.elements, otherElements));
 			}
 			
 			public override Range<T> Intersect(Range<T> other)

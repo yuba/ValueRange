@@ -54,25 +54,12 @@ namespace ValueRange
 
             public override Range<T> Add(Range<T> other)
             {
-                return other.Add (this);
+				return other.Add (new [] {this});
 			}
 			
-			protected override Range<T> Add (ComplexRange other)
+			protected override Range<T> Add (SingleRange[] otherElements)
 			{
-				return other.Add(this);
-			}
-			
-			protected override Range<T> Add (SingleRange other)
-			{
-				if (this.upper < other.lower) {	// aの先頭の方が小さければ、それを流す
-					return new ComplexRange (new[] { this, other});
-				}
-				else if (other.upper < this.lower) {	// bの先頭の方が小さければ、それを流す
-					return new ComplexRange (new[] { other, this });
-				}
-				else {
-					return Merge (this, other);
-				}
+				return ComplexRange.Create(Add (new [] {this}, otherElements));
 			}
 
             public override Range<T> Intersect(Range<T> other)
@@ -152,9 +139,10 @@ namespace ValueRange
 
 			public static SingleRange Merge (SingleRange a, SingleRange b)
 			{
-				return new SingleRange(
-					a.lower < b.lower ? a.lower : b.lower,
-					a.upper < b.upper ? b.upper : a.upper);
+				BoundValue<T> newLower = a.lower < b.lower ? a.lower : b.lower;
+				BoundValue<T> newUpper = a.upper < b.upper ? b.upper : a.upper;
+
+				return new SingleRange(newLower, newUpper);
 			}
 
 			public static IEnumerable<SingleRange> Add (SingleRange[] a, SingleRange[] b)
@@ -162,7 +150,7 @@ namespace ValueRange
 				SingleRange onStage = null;
 				int indexA = 0, indexB = 0;
 				
-				while (indexA < a.Length || indexB < b.Length) {
+				while (true) {
 					if (onStage == null) {
 
 						if (b.Length <= indexB)

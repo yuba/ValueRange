@@ -183,7 +183,7 @@ namespace ValueRange
 						else if (b [indexB].upper < a [indexA].lower)	// bの先頭の方が小さければ、それを流す
 						{
 							yield return b [indexB];
-							indexA++;
+							indexB++;
 						}
 						else
 						{

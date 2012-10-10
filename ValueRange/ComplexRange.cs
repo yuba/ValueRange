@@ -73,26 +73,6 @@ namespace ValueRange
 				}
             }
 
-            public override Range<T> GreaterThan(T value)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override Range<T> GreaterThanOrEquals(T value)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override Range<T> LessThan(T value)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override Range<T> LessThanOrEquals(T value)
-            {
-                throw new NotImplementedException();
-            }
-
             public override bool IsEmpty
             {
 				get { return false; }

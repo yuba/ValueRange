@@ -37,10 +37,10 @@ namespace ValueRange
         public abstract Range<T> Intersect(Range<T> other);
 		protected abstract Range<T> Intersect(SingleRange[] other);
         public abstract Range<T> Complement { get; }
-        public abstract Range<T> GreaterThan(T value);
-        public abstract Range<T> GreaterThanOrEquals(T value);
-        public abstract Range<T> LessThan(T value);
-        public abstract Range<T> LessThanOrEquals(T value);
+        public virtual Range<T> GreaterThan(T value) { return Intersect(SingleRange.ThatGreaterThan(value)); }
+        public virtual Range<T> GreaterThanOrEquals(T value) { return Intersect(SingleRange.ThatGreaterThanOrEquals(value)); }
+        public virtual Range<T> LessThan(T value) { return Intersect(SingleRange.ThatLessThan(value)); }
+        public virtual Range<T> LessThanOrEquals(T value) { return Intersect(SingleRange.ThatLessThanOrEquals(value)); }
 
         public abstract bool IsEmpty { get; }
         public abstract bool IsUniversal { get; }

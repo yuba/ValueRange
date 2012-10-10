@@ -56,7 +56,12 @@ namespace ValueRange
 			
 			public override Range<T> Intersect(Range<T> other)
             {
-                throw new NotImplementedException();
+                return other.Intersect(elements);
+            }
+
+            protected override Range<T> Intersect(SingleRange[] otherElements)
+            {
+                return Create(SingleRange.Intersect(this.elements, otherElements));
             }
 
             public override Range<T> Complement

@@ -64,8 +64,13 @@ namespace ValueRange
 
             public override Range<T> Intersect (Range<T> other)
 			{
-				throw new NotImplementedException();
+                return other.Intersect(new[] { this });
 			}
+
+            protected override Range<T> Intersect(SingleRange[] otherElements)
+            {
+                return ComplexRange.Create(Intersect(new[] { this }, otherElements));
+            }
 
             public override Range<T> Complement {
 				get {
@@ -214,6 +219,49 @@ namespace ValueRange
 
 				if (onStage != null) yield return onStage;
 			}
-		}
+
+            public static SingleRange Intersect(SingleRange a, SingleRange b)
+            {
+                BoundValue<T> newLower = a.lower < b.lower ? b.lower : a.lower;
+                BoundValue<T> newUpper = a.upper < b.upper ? a.upper : b.upper;
+
+                return new SingleRange(newLower, newUpper);
+            }
+
+            public static IEnumerable<SingleRange> Intersect(SingleRange[] a, SingleRange[] b)
+            {
+                int indexA = 0, indexB = 0;
+
+                while (true)
+                {
+                    if (b.Length <= indexB)
+                    {
+                        // aにしか残り要素がない
+                        break;
+                    }
+                    if (a.Length <= indexA)
+                    {
+                        // bにしか残り要素がない
+                        break;
+                    }
+
+                    // a,bとも残り要素あり
+                    if (a[indexA].upper < b[indexB].lower)	// aの先頭の方が小さければ、それを捨てる
+                    {
+                        indexA++;
+                    }
+                    else if (b[indexB].upper < a[indexA].lower)	// bの先頭の方が小さければ、それを捨てる
+                    {
+                        indexB++;
+                    }
+                    else
+                    {
+                        yield return Intersect(a[indexA], b[indexB]);   // 双方の先頭の共通部分を返し、
+                        if (a[indexA].upper < b[indexB].upper) indexA++; else indexB++; // 背の低い方を捨てる(背が同じなら、残ったA側も次のループで捨てられる)
+                    }
+
+                }
+            }
+        }
 	}
 }
